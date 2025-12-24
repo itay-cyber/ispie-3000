@@ -20,6 +20,10 @@ multithreading-> every module is run on a separate thread so that they can run c
 process monitor needs to take a snapshot of all running processes -> ProcSnapshot
 enumerate all proccesses into Process, object describing a process
 
+
+IProcessEnumerator -> every platform implements it's own process enumerator that enumerates process into: IProcessSnapshot whichs contains an
+internal std::vector of 
+
 IProcess -> LinuxProcess | WinProcess
 
 

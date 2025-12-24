@@ -1,68 +1,16 @@
 #include <iostream>
-#include <Windows.h>
-#include <tchar.h>
-#include <Psapi.h>
 
-void PrintProcessNameAndID(DWORD processID)
-{
-    TCHAR szProcessName[MAX_PATH] = TEXT("<unknown>");
+#include <app/modules/shome/shome_module.h>
 
-    // Get a handle to the process.
-
-    HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION |
-                                      PROCESS_VM_READ,
-                                  FALSE, processID);
-
-    // Get the process name.
-    if (NULL != hProcess)
-    {
-        HMODULE hMod;
-        DWORD cbNeeded;
-
-        if (EnumProcessModules(hProcess, &hMod, sizeof(hMod),
-                               &cbNeeded))
-        {
-            GetModuleBaseName(hProcess, hMod, szProcessName,
-                              sizeof(szProcessName) / sizeof(TCHAR));
-        }
-    }
-
-    // Print the process name and identifier.
-
-    _tprintf(TEXT("%s  (PID: %u)\n"), szProcessName, processID);
-
-    // Release the handle to the process.
-
-    CloseHandle(hProcess);
-}
-
+using namespace ISpieCore;
 int main(int argc, char *argv[])
 {
-    std::cout << "Hello, ISPIE!" << std::endl;
-    // Get the list of process identifiers.
+    std::unique_ptr<Interfaces::IModule> module = std::make_unique<ISpieApp::Modules::ShomeModule>();
 
-    DWORD aProcesses[1024],
-        cbNeeded, cProcesses;
-    unsigned int i;
-
-    if (!EnumProcesses(aProcesses, sizeof(aProcesses), &cbNeeded))
-    {
-        return 1;
-    }
-
-    // Calculate how many process identifiers were returned.
-
-    cProcesses = cbNeeded / sizeof(DWORD);
-
-    // Print the name and process identifier for each process.
-
-    for (i = 0; i < cProcesses; i++)
-    {
-        if (aProcesses[i] != 0)
-        {
-            PrintProcessNameAndID(aProcesses[i]);
-        }
-    }
-
+    module->load_module();
+    module->start_module();
+    module->stop_module();
+    module->unload_module();
+    std::cout << "Module Name: " << module->get_module_name() << std::endl;
     return 0;
 }

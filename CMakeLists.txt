@@ -5,8 +5,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Source files
-file(GLOB SOURCES "src/*.cpp")
-file(GLOB HEADERS "src/*.h")
+file(GLOB_RECURSE SOURCES "src/*.cpp")
+file(GLOB_RECURSE HEADERS "src/*.h")
 
 set(PSAPI_VERSION 1)
 
