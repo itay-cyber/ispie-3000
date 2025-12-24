@@ -1,0 +1,31 @@
+A module based program for monitoring different things:
+
+ - Proccess Monitor
+ - incoming, outgoing connections (TCP, UDP)
+ - port scanner
+ - event scanner (correlation engine)
+
+Module based, every thing is a module
+Interface based, for dependency injection too
+
+IModule:
+    load_module() -> loads the module into list of modules
+    start_module() -> starts the module (e.g procmon will take continuous snapshots )
+    stop_module() -> stop_module() stops the module from doing its job
+    unload_module() -> after finished using module, module will be unloaded from memory
+
+
+multithreading-> every module is run on a separate thread so that they can run concurrently
+
+process monitor needs to take a snapshot of all running processes -> ProcSnapshot
+enumerate all proccesses into Process, object describing a process
+
+IProcess -> LinuxProcess | WinProcess
+
+
+ProcMonModule
+NetMonModule
+PortScanModule
+EventScanModule
+
+OS abstraction

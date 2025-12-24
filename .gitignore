@@ -1,0 +1,7 @@
+.vscode/
+build/
+*.log
+*.tmp
+*.bak
+*.o
+*.exe
