@@ -29,14 +29,14 @@ namespace ISpieApp
         {
             bool result = true;
 #ifdef _WIN32
-            // bool do_we_have_privileges = try_obtain_debug_priv();
+            bool do_we_have_privileges = try_obtain_debug_priv();
             //  create windows platform object
-            m_p_wisp_enumerator = std::make_unique<Platform::Win32::Win32WispEnumerator>(false);
+            m_p_wisp_enumerator = std::make_unique<Platform::Win32::Win32WispEnumerator>(do_we_have_privileges);
 
 #else
-            // TODO: maybe dummy object?
-            result = false;
-            throw std::logic_error("This module hasn't been implemented for this platform");
+            // privs?
+            // create linux platform object
+            m_p_wisp_enumerator = std::make_unique<Platform::Linux::LinuxWispEnumerator>(true);
 #endif
             return result;
         }
@@ -65,28 +65,31 @@ namespace ISpieApp
             std::cout << "ShomeModule Unloaded" << std::endl;
         }
 
-        std::string &ShomeModule::get_module_name() const
+        const std::string &ShomeModule::get_module_name() const
         {
-            static std::string name = "ShomeModule";
-            return name;
+            return MODULE_NAME;
         }
 #ifdef _WIN32
         bool ShomeModule::try_obtain_debug_priv()
         {
             bool result = true;
             HANDLE hToken = nullptr;
+            BOOL winResult = OpenProcessToken(
+                GetCurrentProcess(),
+                TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY,
+                &hToken);
 
-            result &= OpenProcessToken(
-                          GetCurrentProcess(),
-                          TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY,
-                          &hToken) == 0;
+            result &= winResult == TRUE;
 
+            // SE_DEBUG_NAME has a certain LUID on this machine
+            // FINDING IT
             LUID luid;
+            winResult = LookupPrivilegeValue(
+                nullptr,
+                SE_DEBUG_NAME,
+                &luid);
 
-            result &= LookupPrivilegeValue(
-                          nullptr,
-                          SE_DEBUG_NAME,
-                          &luid) == 0;
+            result &= winResult == TRUE;
 
             // enable debug priv
             TOKEN_PRIVILEGES tp{};
@@ -94,15 +97,19 @@ namespace ISpieApp
             tp.Privileges[0].Luid = luid;
             tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
 
-            result &= AdjustTokenPrivileges(
-                          hToken,
-                          FALSE,
-                          &tp,
-                          sizeof(tp),
-                          nullptr,
-                          nullptr) == 0;
+            winResult = AdjustTokenPrivileges(
+                hToken,
+                FALSE,
+                &tp,
+                sizeof(tp),
+                nullptr,
+                nullptr);
 
-            result &= GetLastError() == ERROR_NOT_ALL_ASSIGNED;
+            result &= winResult == TRUE;
+            DWORD res = GetLastError();
+            result &= res != ERROR_NOT_ALL_ASSIGNED;
+
+            std::cout << res << std::endl;
 
             CloseHandle(hToken);
 

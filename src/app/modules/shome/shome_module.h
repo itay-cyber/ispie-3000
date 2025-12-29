@@ -12,7 +12,7 @@ Written by Itay G - 2025
 #include <core/interfaces/wisp_enumerator_if.h>
 #include <core/interfaces/wisp_if.h>
 #include <core/interfaces/wisp_snapshot_if.h>
-
+#include <app/definitions.h>
 #ifdef _WIN32
 #include <windows.h>
 #include <app/os/win32/modules/shome/wisp_enumerator/win32_wisp_enumerator.h>
@@ -26,6 +26,7 @@ namespace ISpieApp
         class ShomeModule : public ISpieCore::Interfaces::IModule
         {
         protected:
+            const std::string MODULE_NAME = ISpieApp::Definitions::SHOME_MODULE_NAME;
             std::unique_ptr<ISpieCore::Interfaces::IWispEnumerator> m_p_wisp_enumerator;
 
 #ifdef _WIN32
@@ -44,7 +45,7 @@ namespace ISpieApp
             void stop_module() override;
 
             // get module name
-            std::string &get_module_name() const override;
+            const std::string &get_module_name() const override;
         };
     }
 }

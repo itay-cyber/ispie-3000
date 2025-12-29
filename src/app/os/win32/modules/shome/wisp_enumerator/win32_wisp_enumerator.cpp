@@ -20,7 +20,6 @@ Written by Itay G - 2025
 #include <core/common/utility.h>
 #include <app/os/win32/modules/shome/wisp_enumerator/win32_wisp_enumerator.h>
 #include <app/os/win32/modules/shome/wisp_snapshot/win32_wisp_snapshot.h>
-#include "win32_wisp_enumerator.h"
 
 namespace ISpieApp
 {

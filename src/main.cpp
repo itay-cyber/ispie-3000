@@ -1,16 +1,17 @@
 #include <iostream>
+#include <cstdlib>
 
-#include <app/modules/shome/shome_module.h>
-
+#include <app/module_mgr/isp_module_mgr.h>
+#include <app/app.h>
 using namespace ISpieCore;
 int main(int argc, char *argv[])
 {
-    std::unique_ptr<Interfaces::IModule> module = std::make_unique<ISpieApp::Modules::ShomeModule>();
+    std::unique_ptr<ISpieCore::Interfaces::IModuleMgr> module_mgr = std::make_unique<ISpieApp::ISpieModuleMgr>();
+    ISpieApp::App app(std::move(module_mgr));
 
-    module->load_module();
-    module->start_module();
-    module->stop_module();
-    module->unload_module();
-    std::cout << "Module Name: " << module->get_module_name() << std::endl;
+    app.initialize_app();
+    app.run_app();
+    app.shutdown_app();
+
     return 0;
 }
