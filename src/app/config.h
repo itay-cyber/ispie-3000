@@ -8,16 +8,12 @@
 
 Written by Itay G - 2025
 ******************************/
-#include <string>
-namespace ISpieCore
+#include <cstdint>
+namespace ISpieApp
 {
-    namespace Common
+    namespace Config
     {
-#ifdef _WIN32
-#include <windows.h>
-        std::string wstring_to_string(const std::basic_string<TCHAR> &input);
-#endif
-        // replace all occurences of char_to_replace with replace_char in a certain string
-        void replace_chars(std::string &input_str, char char_to_replace, char replace_char);
+        const bool TRUNCATE_MODULE_STRS = true;
+        const std::size_t MODULE_STRS_MAX_LENGTH = 120;
     }
 }

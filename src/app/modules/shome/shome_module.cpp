@@ -45,14 +45,31 @@ namespace ISpieApp
         {
             std::cout << "ShomeModule Started" << std::endl;
             std::shared_ptr<ISpieCore::Interfaces::IWispSnapshot> snapshot = m_p_wisp_enumerator->get_wisp_snapshot();
-
+            bool result = true;
             // for now
-            std::unordered_map wisps = snapshot->get_all_wisps();
-            for (const auto &[wisp_id, wisp] : wisps)
+            if (snapshot)
             {
-                std::cout << "Wisp Id: " << wisp_id << ", Wisp Image: " << wisp->get_image_name() << std::endl;
+                std::unordered_map<unsigned int, std::shared_ptr<ISpieCore::Interfaces::IWisp>> wisps = snapshot->get_all_wisps();
+                if (!wisps.empty())
+                {
+                    for (const auto &[wisp_id, wisp] : wisps)
+                    {
+                        // TODO: Replace with PrettyLogger class in the future
+                        std::string strwispid = std::to_string(wisp_id);
+                        std::size_t len = strwispid.length();
+                        for (int i = 0; i < 5 - len; i++)
+                        {
+                            strwispid += ' ';
+                        }
+                        std::cout << strwispid << "       " << wisp->get_image_name() << std::endl;
+                    }
+                }
+                else
+                {
+                    result = false;
+                }
             }
-            return true;
+            return result;
         }
 
         void ShomeModule::stop_module()

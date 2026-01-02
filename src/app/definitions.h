@@ -14,5 +14,6 @@ namespace ISpieApp
     namespace Definitions
     {
         const std::string SHOME_MODULE_NAME = "ShomeModule";
+        const int INVALID_PID = -999;
     }
 }

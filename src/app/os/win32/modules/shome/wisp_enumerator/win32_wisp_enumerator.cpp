@@ -20,6 +20,8 @@ Written by Itay G - 2025
 #include <core/common/utility.h>
 #include <app/os/win32/modules/shome/wisp_enumerator/win32_wisp_enumerator.h>
 #include <app/os/win32/modules/shome/wisp_snapshot/win32_wisp_snapshot.h>
+#include <app/config.h>
+#include <app/definitions.h>
 
 namespace ISpieApp
 {
@@ -97,7 +99,7 @@ namespace ISpieApp
                         new_snapshot->add_wisp(temp_winfo);
                     }
                 }
-
+                m_p_current_snapshot = new_snapshot;
                 return new_snapshot;
             }
 

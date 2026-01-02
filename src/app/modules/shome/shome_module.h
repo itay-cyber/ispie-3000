@@ -17,6 +17,7 @@ Written by Itay G - 2025
 #include <windows.h>
 #include <app/os/win32/modules/shome/wisp_enumerator/win32_wisp_enumerator.h>
 #else
+#include <app/os/linux/modules/shome/wisp_enumerator/linux_wisp_enumerator.h>
 #endif
 
 namespace ISpieApp
