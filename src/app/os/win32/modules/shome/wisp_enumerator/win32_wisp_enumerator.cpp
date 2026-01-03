@@ -66,6 +66,15 @@ namespace ISpieApp
                 std::basic_string<TCHAR> processName_wstr(processName);
                 std::string processName_str = ISpieCore::Common::wstring_to_string(processName_wstr);
 
+                if (Config::TRUNCATE_MODULE_STRS)
+                {
+                    if (processName_str.length() > Config::MODULE_STRS_MAX_LENGTH)
+                    {
+                        processName_str = processName_str.substr(0, Config::MODULE_STRS_MAX_LENGTH);
+                        processName_str += '...';
+                    }
+                }
+
                 new_wisp_info.wisp_image_name = processName_str;
                 return new_wisp_info;
             }

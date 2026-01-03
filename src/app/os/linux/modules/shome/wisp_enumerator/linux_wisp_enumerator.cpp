@@ -26,8 +26,7 @@ namespace ISpieApp
     {
         namespace Linux
         {
-            LinuxWispEnumerator::LinuxWispEnumerator(bool is_privileged_enumeration)
-                : m_is_privileged_enumeration(is_privileged_enumeration)
+            LinuxWispEnumerator::LinuxWispEnumerator()
             {
             }
 

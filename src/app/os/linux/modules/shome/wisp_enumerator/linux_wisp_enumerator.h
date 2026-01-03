@@ -21,7 +21,6 @@ namespace ISpieApp
             class LinuxWispEnumerator : public ISpieCore::Interfaces::IWispEnumerator
             {
             protected:
-                bool m_is_privileged_enumeration;
                 std::shared_ptr<ISpieCore::Interfaces::IWispSnapshot> m_p_previous_snapshot;
                 std::shared_ptr<ISpieCore::Interfaces::IWispSnapshot> m_p_current_snapshot;
 
@@ -33,7 +32,7 @@ namespace ISpieApp
                 int try_get_proc_subpath_id(fs::path &path);
 
             public:
-                LinuxWispEnumerator(bool is_privileged_enumeration);
+                LinuxWispEnumerator();
                 virtual ~LinuxWispEnumerator() = default;
 
                 virtual std::shared_ptr<ISpieCore::Interfaces::IWispSnapshot> get_wisp_snapshot() override;

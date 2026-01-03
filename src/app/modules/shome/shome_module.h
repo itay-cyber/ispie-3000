@@ -30,8 +30,11 @@ namespace ISpieApp
             const std::string MODULE_NAME = ISpieApp::Definitions::SHOME_MODULE_NAME;
             std::unique_ptr<ISpieCore::Interfaces::IWispEnumerator> m_p_wisp_enumerator;
 
+            bool m_privileged_enum;
+
 #ifdef _WIN32
             bool try_obtain_debug_priv();
+            bool disable_debug_priv();
 #endif
         public:
             ShomeModule();

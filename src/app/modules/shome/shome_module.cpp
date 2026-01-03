@@ -16,13 +16,12 @@ namespace ISpieApp
     namespace Modules
     {
         ShomeModule::ShomeModule()
+            : m_privileged_enum(false)
         {
-            std::cout << "ShomeModule Constructor" << std::endl;
         }
 
         ShomeModule::~ShomeModule()
         {
-            std::cout << "ShomeModule Destructor" << std::endl;
         }
 
         bool ShomeModule::load_module()
@@ -30,6 +29,7 @@ namespace ISpieApp
             bool result = true;
 #ifdef _WIN32
             bool do_we_have_privileges = try_obtain_debug_priv();
+            m_privileged_enum = do_we_have_privileges;
             //  create windows platform object
             m_p_wisp_enumerator = std::make_unique<Platform::Win32::Win32WispEnumerator>(do_we_have_privileges);
 
@@ -79,7 +79,10 @@ namespace ISpieApp
 
         void ShomeModule::unload_module()
         {
-            std::cout << "ShomeModule Unloaded" << std::endl;
+            if (m_privileged_enum)
+            {
+                disable_debug_priv();
+            }
         }
 
         const std::string &ShomeModule::get_module_name() const
@@ -126,13 +129,61 @@ namespace ISpieApp
             DWORD res = GetLastError();
             result &= res != ERROR_NOT_ALL_ASSIGNED;
 
-            std::cout << res << std::endl;
-
             CloseHandle(hToken);
 
             if (!result)
             {
                 std::cout << "Shome: WARNING: running without SE_DEBUG_PRIVILEGE, process data limited" << std::endl;
+            }
+            return result;
+        }
+
+        bool ShomeModule::disable_debug_priv()
+        {
+            bool result = true;
+            // get a handle to the process access token
+            HANDLE hToken = nullptr;
+            BOOL winResult = OpenProcessToken(
+                GetCurrentProcess(),
+                TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY,
+                &hToken);
+
+            result &= winResult == TRUE;
+
+            // SE_DEBUG_NAME has a certain LUID on this machine
+            // FINDING IT
+            LUID luid;
+            winResult = LookupPrivilegeValue(
+                nullptr,
+                SE_DEBUG_NAME,
+                &luid);
+
+            result &= winResult == TRUE;
+
+            // enable debug priv
+            TOKEN_PRIVILEGES tp{};
+            tp.PrivilegeCount = 1;
+            tp.Privileges[0].Luid = luid;
+            // passing 0 disables this
+            tp.Privileges[0].Attributes = 0;
+
+            winResult = AdjustTokenPrivileges(
+                hToken,
+                FALSE,
+                &tp,
+                sizeof(tp),
+                nullptr,
+                nullptr);
+
+            result &= winResult == TRUE;
+            DWORD res = GetLastError();
+            result &= res != ERROR_NOT_ALL_ASSIGNED;
+
+            CloseHandle(hToken);
+
+            if (!result)
+            {
+                std::cout << "Shome: WARNING: failed to disable SE_DEBUG_PRIV after use" << std::endl;
             }
             return result;
         }
