@@ -4,5 +4,5 @@ ISPIE All-Purpose Monitor!!
 
 In Progress
 
-# Wisp = Process
-# Shome = Process Monitor
+- Wisp = Process
+- ShoMe = Process Monitor
