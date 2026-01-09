@@ -8,7 +8,7 @@
 
 Written by Itay G - 2025
 ******************************/
-#include <cstdint>
+#include <cstddef>
 namespace ISpieApp
 {
     namespace Config
